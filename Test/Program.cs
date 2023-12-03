@@ -3,6 +3,23 @@
 class Program
 {
 
+    class Test
+    {
+        int[,] a;
+
+        public Test(ref int[,] _a)
+        {
+            a = _a;
+        }
+
+        public void Foo()
+        {
+            a[1, 2] = 100;
+            a[2, 1] = 45;
+            a[1, 4] = 56;
+        }
+    }
+
     public static void Foo(int[,] matrix)
     {
         matrix[0, 0] = 1;
@@ -27,6 +44,9 @@ class Program
         }
 
         Foo(matrix);
+
+        Test test = new Test(ref matrix);
+        test.Foo();
 
         for (int i = 0; i < 5; i++)
         {
