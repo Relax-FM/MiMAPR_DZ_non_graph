@@ -10,6 +10,8 @@ namespace MiMAPR_DZ_non_graph
 {
     internal class ElemsFab
     {
+        // private static double maxElem = 0;
+
         private static int IDcounter = 0;
         private static int Rcounter = 0;
         private static int Ccounter = 0;
@@ -23,11 +25,13 @@ namespace MiMAPR_DZ_non_graph
         private static double NowTime = 0; // Время сейчас
         // private static double NowStep = 0; // Текущий шаг
         private static double dt = 0; // Текуший шаг
+        private static double dt_before = 0;
         private static double StopStep = 0; // Величина шага на котором остановилась программа
         private static double FullTime = 0; // Полное время работы программы
 
         private static double Eps_min = 0;
         private static double Eps_max = 0;
+        private static double Deviation = 0;
         private static double Iter_count = 0;
 
         private static double[] vector;
@@ -46,6 +50,33 @@ namespace MiMAPR_DZ_non_graph
         private static List<double> Die;
 
         private static List<ElemTemp> elemList = new List<ElemTemp>();
+
+        public static void Calculating()
+        {
+            List<StreamWriter> sw = new List<StreamWriter>();
+
+            for (int i = 0; i < UselCount; i++)
+            {
+                string filename = $"phi-{i + 1}.txt";
+                sw.Add(new StreamWriter(filename));
+            }
+
+            // ТУТ ВСЁ РЕШЕНИЕ
+            // TODO: дописать солвер
+            // ТУТ ВСЁ РЕШЕНИЕ
+
+            while (NowTime < FullTime)
+            {
+
+            }
+
+
+                for (int i = 0; i < UselCount; i++)
+                {
+                    sw[i].Close(); // Позакрывали все файлы.
+                }
+
+        }
 
         public static void CreateVector()
         {
@@ -76,7 +107,28 @@ namespace MiMAPR_DZ_non_graph
                 }
             }
 
+            MinusVector();
             PrintVector();
+        }
+
+        private static bool MaxOrEps()
+        {
+            for (int i = 0; i < vector.Length; i++)
+            {
+                if (vector[i] > Deviation)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static void MinusVector()
+        {
+            for (int i = 0; i < vector.Length; i++)
+            {
+                vector[i] *= -1;
+            }
         }
 
         public static void CreateMatrix()
@@ -340,47 +392,71 @@ namespace MiMAPR_DZ_non_graph
 
         public static void SetCountingTimeSettings(double start_time,double full_time, double start_step) 
         {
-            NowTime = start_time == 0 ? 1e-15 : start_time;
+            NowTime = start_time; // start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени
             //NowStep = start_step;
+            dt_before = start_step;
             dt = start_step;
             StopStep = start_step;
             FullTime = full_time;
         }
 
-        public static void SetCountingEpsilonSettings(double eps_min, double eps_max, double iter_count = 7)
+        public static void SetCountingEpsilonSettings(double eps_min, double eps_max, double deviation = 1e-3,double iter_count = 7)
         {
             Eps_min = eps_min;
             Eps_max = eps_max;
+            Deviation = deviation;
             Iter_count = iter_count;
         }
 
-        private static void Gauss()
+        private static bool Gauss()
         {
-
-        }
-
-        public static void Calculating()
-        {
-            List<StreamWriter> sw = new List<StreamWriter>();
-
-            for (int i = 0; i < UselCount; i++)
+            // TODO: дописать Гаусса
+            int i, j, k;
+            double diagElem = 0;
+            for (i = 0; i < vector.Length; i++) // Прямой проход
             {
-                string filename = $"phi-{i + 1}.txt";
-                sw.Add(new StreamWriter(filename));
+                diagElem = matrix[i, i];
+                if (diagElem == 0)
+                {
+                    return false; // Вырожденная матрица(
+                }
+
+                for (j = i; j < vector.Length; j++)
+                {
+                    matrix[i, j] /= diagElem;
+                }
+                vector[i] /= diagElem;
+
+                for (k = i + 1; k < vector.Length; k++)
+                {
+                    diagElem = matrix[k, i];
+                    for (j = i; j < vector.Length; j++)
+                    {
+                        matrix[k,j] -= matrix[i,j] * diagElem;
+                    }
+                    vector[k] -= vector[i] * diagElem;
+                }
             }
 
-            // ТУТ ВСЁ РЕШЕНИЕ
-
-            for (int i = 0; i < UselCount; i++)
+            for (i = vector.Length - 2; i >= 0 ; i--)
             {
-                sw[i].Close(); // Позакрывали все файлы.
+                for (j = i+1; j < vector.Length; j++)
+                {
+                    vector[i] -= matrix[i, j] * vector[j];
+                }
             }
+
+            return true;
 
         }
 
         public static void CalculatingTest()
         {
-            Console.WriteLine("Calculating is starting!");
+            Console.WriteLine("Start calculating");
+            if (Gauss())
+            {
+                PrintVector();
+            }
         }
 
         public static void TestPrintElems()
