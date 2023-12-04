@@ -51,15 +51,16 @@ namespace MiMAPR_DZ_non_graph
 
         private static List<ElemTemp> elemList = new List<ElemTemp>();
 
-        public static void Calculating()
+        public static int Calculating()
         {
-            List<StreamWriter> sw = new List<StreamWriter>();
+            StreamWriter[] sw = new StreamWriter[UselCount];
 
             for (int i = 0; i < UselCount; i++)
             {
                 string filename = $"phi-{i + 1}.txt";
-                sw.Add(new StreamWriter(filename));
+                sw[i] = new StreamWriter(filename);
             }
+            Console.WriteLine("Открыл файлы норм");
 
             // ТУТ ВСЁ РЕШЕНИЕ
             // TODO: дописать солвер
@@ -67,15 +68,75 @@ namespace MiMAPR_DZ_non_graph
 
             while (NowTime < FullTime)
             {
-
+                ClearTogether();
+                CreateTogether();
+                if (Gauss())
+                {
+                    Summing();
+                    Console.WriteLine("Даже до сюда дошел");
+                    for (int i = 0; i < UselCount; i++)
+                    {
+                        sw[i].WriteLine($"{NowTime} {Phi_now[i]}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Hui Hui Pizda Pizda");
+                    return 1;
+                }
+                NowTime += dt;
             }
 
 
-                for (int i = 0; i < UselCount; i++)
-                {
-                    sw[i].Close(); // Позакрывали все файлы.
-                }
+            for (int i = 0; i < UselCount; i++)
+            {
+                sw[i].Close(); // Позакрывали все файлы.
+            }
+            return 0;
 
+        }
+
+        private static void Summing()
+        {
+            for (int i = 0; i < UselCount; i++)
+            {
+                Phi_with_dot[i] = Phi_with_dot[i] + vector[i]; // фи с точкой + дельта фи с точкой
+                Phi_integ_before[i] = Phi_integ[i]; // интеграл от фи на нынешнем шаге стал интегралом на предыдущем
+                Phi_integ[i] = Phi_integ[i] + vector[i + UselCount]; // интеграл от фи плюс дельта интеграл от фи
+                Phi_extra[i] = Phi_before[i]; // фи прошлое стало фи пазапрошлым
+                Phi_before[i] = Phi_now[i]; // фи текущее стало фи предыдущим
+                Phi_now[i] = Phi_now[i] + vector[i + (2 * UselCount)]; // Фи плюс дельта фи
+            }
+
+            for (int i = 3*UselCount; i < ShapeCount; i++)
+            {
+                Ie[i-3*UselCount] = Ie[i-3*UselCount] + vector[i];
+            }
+        }
+
+        public static void ClearMatrix()
+        {
+            for (int i = 0; i < ShapeCount; i++)
+            {
+                for (int j = 0; j < ShapeCount; j++)
+                {
+                    matrix[i, j] = 0;
+                }
+            }
+        }
+
+        public static void ClearVector()
+        {
+            for (int i = 0; i < ShapeCount; i++)
+            {
+                vector[i] = 0;
+            }
+        }
+
+        public static void ClearTogether()
+        {
+            ClearMatrix();
+            ClearVector();
         }
 
         public static void CreateVector()
@@ -108,27 +169,7 @@ namespace MiMAPR_DZ_non_graph
             }
 
             MinusVector();
-            PrintVector();
-        }
-
-        private static bool MaxOrEps()
-        {
-            for (int i = 0; i < vector.Length; i++)
-            {
-                if (vector[i] > Deviation)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static void MinusVector()
-        {
-            for (int i = 0; i < vector.Length; i++)
-            {
-                vector[i] *= -1;
-            }
+            //PrintVector();
         }
 
         public static void CreateMatrix()
@@ -140,7 +181,7 @@ namespace MiMAPR_DZ_non_graph
 
             for (int i = 0; i < UselCount; i++)
             {
-                matrix[i, i + UnitMatrixShape] = -1.0/dt; // -1/dt
+                matrix[i, i + UnitMatrixShape] = -1.0 / dt; // -1/dt
                 matrix[i + UselCount, i + UnitMatrixShape] = -dt; // -dt
             }
 
@@ -167,7 +208,33 @@ namespace MiMAPR_DZ_non_graph
                 }
             }
 
-            PrintMatrix();
+            //PrintMatrix();
+        }
+
+        public static void CreateTogether()
+        {
+            CreateMatrix();
+            CreateVector();
+        }
+
+        private static bool MaxOrEps()
+        {
+            for (int i = 0; i < vector.Length; i++)
+            {
+                if (vector[i] > Deviation)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static void MinusVector()
+        {
+            for (int i = 0; i < vector.Length; i++)
+            {
+                vector[i] *= -1;
+            }
         }
 
         public static void CreateTestVector()
@@ -392,7 +459,7 @@ namespace MiMAPR_DZ_non_graph
 
         public static void SetCountingTimeSettings(double start_time,double full_time, double start_step) 
         {
-            NowTime = start_time; // start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени
+            NowTime = start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени // start_time; //
             //NowStep = start_step;
             dt_before = start_step;
             dt = start_step;
@@ -410,7 +477,14 @@ namespace MiMAPR_DZ_non_graph
 
         private static bool Gauss()
         {
-            // TODO: дописать Гаусса
+            /// <summary>Computes the solution of a linear equation system with Gauss method.</summary>
+            /// <param name="matrix">
+            /// The system of linear equations matrix[row, col] where (rows == cols).
+            /// </param>
+            /// <param name="vector">
+            /// The answers of system of linear equations vector[row] where (rows == cols).
+            /// </param>
+            /// <returns>Returns true - if matrix can be soluted by Gauss. Return false - if couldn't</returns>
             int i, j, k;
             double diagElem = 0;
             for (i = 0; i < vector.Length; i++) // Прямой проход
@@ -438,7 +512,7 @@ namespace MiMAPR_DZ_non_graph
                 }
             }
 
-            for (i = vector.Length - 2; i >= 0 ; i--)
+            for (i = vector.Length - 2; i >= 0 ; i--) // Обратка
             {
                 for (j = i+1; j < vector.Length; j++)
                 {
@@ -455,6 +529,7 @@ namespace MiMAPR_DZ_non_graph
             Console.WriteLine("Start calculating");
             if (Gauss())
             {
+                PrintMatrix();
                 PrintVector();
             }
         }

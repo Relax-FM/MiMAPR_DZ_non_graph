@@ -24,7 +24,7 @@ namespace MiMAPR_DZ_non_graph
             ElemsFab.TestPrintElems();
 
             ElemsFab.SetUselAndShapeCount(4); // Задаем кол-во узлов
-            ElemsFab.SetCountingTimeSettings(0.0, 1e-3, 1e-8); // Временные настройки моделирования
+            ElemsFab.SetCountingTimeSettings(0.0, 1e-3, 1e-10); // Временные настройки моделирования
             ElemsFab.SetCountingEpsilonSettings(1e-2,1e-6); // Критерии останова (TODO: Нихуя не понял нужны ли они)
 
             ElemsFab.StartPreparing(); // Выделение памятей и заполнение нулями всех элементов.
@@ -32,7 +32,9 @@ namespace MiMAPR_DZ_non_graph
             ElemsFab.CreateMatrix(); // Заполняем матрицу Якоби инфой
             ElemsFab.CreateVector(); // Заполняем вектор невязок инфой 
 
-            ElemsFab.CalculatingTest(); // Тут вся магия по идее происходить будет когда-нибудь
+            ElemsFab.Calculating();
+
+            //ElemsFab.CalculatingTest(); // Тут вся магия по идее происходить будет когда-нибудь
 
         }
     }

@@ -1,60 +1,139 @@
 ﻿using System;
+using System.Numerics;
 
 class Program
 {
-
-    class Test
+    private static bool Gauss(ref double[,] matrix, ref double[] vector)
     {
-        int[,] a;
-
-        public Test(ref int[,] _a)
+        // TODO: дописать Гаусса
+        int i, j, k;
+        double diagElem = 0;
+        for (i = 0; i < vector.Length; i++) // Прямой проход
         {
-            a = _a;
+            diagElem = matrix[i, i];
+            if (diagElem == 0)
+            {
+                return false; // Вырожденная матрица(
+            }
+
+            for (j = i; j < vector.Length; j++)
+            {
+                matrix[i, j] /= diagElem;
+            }
+            vector[i] /= diagElem;
+
+            for (k = i + 1; k < vector.Length; k++)
+            {
+                diagElem = matrix[k, i];
+                for (j = i; j < vector.Length; j++)
+                {
+                    matrix[k, j] -= matrix[i, j] * diagElem;
+                }
+                vector[k] -= vector[i] * diagElem;
+            }
         }
 
-        public void Foo()
+        for (i = vector.Length - 2; i >= 0; i--)
         {
-            a[1, 2] = 100;
-            a[2, 1] = 45;
-            a[1, 4] = 56;
+            for (j = i + 1; j < vector.Length; j++)
+            {
+                vector[i] -= matrix[i, j] * vector[j];
+            }
         }
+
+        return true;
+
     }
 
-    public static void Foo(int[,] matrix)
-    {
-        matrix[0, 0] = 1;
-        matrix[1, 1] = 2;
-        matrix[2, 2] = 4;
-        matrix[3, 3] = 8;
-        matrix[4, 4] = 16;
-    }
 
     public static void Main(string[] args)
     {
-        int[,] matrix = new int[5, 5];
+        /*double[,] matrix = new double[5, 5] {
+        //    { 5, 4, 3, 2, 1},
+        //    { 4, 3, 2, 1, 1},
+        //    { 2, 3, 1, 2, 1},
+        //    { 1, 3, 1, 1, 1},
+        //    { 1, 1, 1, 2, 1}
+        //};
+        //double[] vector = new double[5]
+        //{
+        //    10, 9, 8, 7, 6
+        //};
 
-        for (int i = 0; i < 5; i++)
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    for (int j = 0; j < 5; j++)
+        //    {
+        //        Console.Write($"{matrix[i, j]}\t");
+        //    }
+        //    Console.WriteLine();
+        //}
+        //Console.WriteLine();
+        //Console.WriteLine();
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    Console.Write($"{vector[i]}\t");
+        //    Console.WriteLine();
+        //}
+        //Console.WriteLine();
+
+
+        //Console.WriteLine("Start calculating");
+        //if (Gauss(ref matrix,ref vector))
+        //{
+        //    for (int i = 0; i < 5; i++)
+        //    {
+        //        for (int j = 0; j < 5; j++)
+        //        {
+        //            Console.Write($"{matrix[i, j]}\t");
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //    Console.WriteLine();
+        //    Console.WriteLine();
+        //    for (int i = 0; i < 5; i++)
+        //    {
+        //        Console.Write($"{vector[i]}\t");
+        //        Console.WriteLine();
+        //    }
+        //    Console.WriteLine();
+        //}*/
+
+        int N = 5; // Количество файлов
+        StreamWriter[] sw = new StreamWriter[N];
+
+
+        for (int i = 0; i < N; i++)
         {
-            for (int j = 0; j < 5; j++)
-            {
-                matrix[i, j] = 0;
-                Console.Write($"{matrix[i, j]}\t");
-            }
-            Console.WriteLine();
+            string fileName = $"file{i}.txt"; // Имя файла (например, file1.txt, file2.txt и т.д.)
+            sw[i] = new StreamWriter(fileName);
+            
         }
 
-        Foo(matrix);
-
-        Test test = new Test(ref matrix);
-        test.Foo();
-
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < N; i++)
         {
-            for (int j = 0; j < 5; j++)
-            {
-                Console.Write($"{matrix[i, j]}\t");
-            }
-            Console.WriteLine();
+            sw[i].WriteLine("12345");
         }
+
+        for (int i = 0; i < N; i++)
+        {
+            sw[i].WriteLine("12345");
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            sw[i].WriteLine("12345");
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            sw[i].WriteLine("HUI HUI PIZDA PIZDA");
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            sw[i].Close();
+        }
+
     }
 }
