@@ -81,7 +81,7 @@ namespace MiMAPR_DZ_non_graph
                 }
                 else
                 {
-                    Console.WriteLine("Hui Hui Pizda Pizda");
+                    Console.WriteLine("Suetaaaa");
                     return 1;
                 }
                 NowTime += dt;
