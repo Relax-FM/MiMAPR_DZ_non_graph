@@ -25,7 +25,7 @@ namespace MiMAPR_DZ_non_graph
 
             ElemsFab.SetUselAndShapeCount(4); // Задаем кол-во узлов
             ElemsFab.SetCountingTimeSettings(0.0, 1e-3, 1e-10); // Временные настройки моделирования
-            ElemsFab.SetCountingEpsilonSettings(1e-2,1e-6); // Критерии останова (TODO: Нихуя не понял нужны ли они)
+            ElemsFab.SetCountingEpsilonSettings(1e-2,1e-6); // Критерии останова (TODO: не понял нужны ли они)
 
             ElemsFab.StartPreparing(); // Выделение памятей и заполнение нулями всех элементов.
 
