@@ -55,7 +55,7 @@ namespace MiMAPR_DZ_non_graph
             Console.WriteLine("Вот это ты вряд ли увидешь :)");
         }
 
-        public virtual void GetEdsOnVector(ref double[] vector, int offset)
+        public virtual void GetEdsOnVector(ref double[] vector, int offset, double _NowTime)
         {
             Console.WriteLine("Вот это ты вряд ли увидешь :)");
         }

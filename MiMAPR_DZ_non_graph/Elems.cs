@@ -305,8 +305,9 @@ namespace MiMAPR_DZ_non_graph
             }
         }
 
-        public override void GetEdsOnVector(ref double[] vector, int offset)
+        public override void GetEdsOnVector(ref double[] vector, int offset, double _NowTime)
         {
+            NowTime = _NowTime;
             double E = funcFlag ? SinusoidFunc(NowTime) : value;
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
@@ -415,15 +416,35 @@ namespace MiMAPR_DZ_non_graph
         public double CountI()
         {
             double res;
+            double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
+            double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
 
-            res = It * (Math.Exp((Phi_now[leftSideUzel-1] - Phi_now[rightSideUzel-1])/Mft ) - 1);
+            res = It * (Math.Exp((x1 - x2)/Mft ) - 1);
 
             return res;
         }
 
         public override void AddElemOnMatrix(ref double[,] matrix, int x, int y)
         {
-            throw new NotImplementedException("Куда лезешь, тебе сюда не надо");
+            double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
+            double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
+            double val = It / Mft * (Math.Exp((x1 - x2)/Mft));
+
+            if ((leftSideUzel > 0) && (rightSideUzel == 0))
+            {
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val; // 1/L
+            }
+            if ((leftSideUzel == 0) && (rightSideUzel > 0))
+            {
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val; // 1/L
+            }
+            if ((leftSideUzel > 0) && (rightSideUzel > 0))
+            {
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val;
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val;
+                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= val;
+                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= val;
+            }
         }
 
         public override void AddElemOnMatrixTest(int x, int y, int cnt, ref double[,] matrix, int offset = 0)
@@ -444,7 +465,7 @@ namespace MiMAPR_DZ_non_graph
             else if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
                 vector[leftSideUzel - 1 + offset] += CountI();
-                vector[rightSideUzel - 1 + offset] -= CountI(); //funcFlag ? SinusoidFunc(NowTime) : value;
+                vector[rightSideUzel - 1 + offset] -= CountI();
             }
         }
 

@@ -48,7 +48,7 @@ class Program
 
     public static void Main(string[] args)
     {
-        /*double[,] matrix = new double[5, 5] {
+        //double[,] matrix = new double[5, 5] {
         //    { 5, 4, 3, 2, 1},
         //    { 4, 3, 2, 1, 1},
         //    { 2, 3, 1, 2, 1},
@@ -60,80 +60,55 @@ class Program
         //    10, 9, 8, 7, 6
         //};
 
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    for (int j = 0; j < 5; j++)
-        //    {
-        //        Console.Write($"{matrix[i, j]}\t");
-        //    }
-        //    Console.WriteLine();
-        //}
-        //Console.WriteLine();
-        //Console.WriteLine();
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    Console.Write($"{vector[i]}\t");
-        //    Console.WriteLine();
-        //}
-        //Console.WriteLine();
-
-
-        //Console.WriteLine("Start calculating");
-        //if (Gauss(ref matrix,ref vector))
-        //{
-        //    for (int i = 0; i < 5; i++)
-        //    {
-        //        for (int j = 0; j < 5; j++)
-        //        {
-        //            Console.Write($"{matrix[i, j]}\t");
-        //        }
-        //        Console.WriteLine();
-        //    }
-        //    Console.WriteLine();
-        //    Console.WriteLine();
-        //    for (int i = 0; i < 5; i++)
-        //    {
-        //        Console.Write($"{vector[i]}\t");
-        //        Console.WriteLine();
-        //    }
-        //    Console.WriteLine();
-        //}*/
-
-        int N = 5; // Количество файлов
-        StreamWriter[] sw = new StreamWriter[N];
-
-
-        for (int i = 0; i < N; i++)
+        double[,] matrix = new double[3, 3] {
+            { 2, 1, 1},
+            { 1, -1, 0},
+            { 3, -1, 2}
+        };
+        double[] vector = new double[3]
         {
-            string fileName = $"file{i}.txt"; // Имя файла (например, file1.txt, file2.txt и т.д.)
-            sw[i] = new StreamWriter(fileName);
-            
+            2, -2, 2
+        };
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                Console.Write($"{matrix[i, j]}\t");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
+        Console.WriteLine();
+        for (int i = 0; i < 3; i++)
+        {
+            Console.Write($"{vector[i]}\t");
+            Console.WriteLine();
+        }
+        Console.WriteLine();
+
+
+        Console.WriteLine("Start calculating");
+        if (Gauss(ref matrix, ref vector))
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Console.Write($"{matrix[i, j]}\t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+            for (int i = 0; i < 3; i++)
+            {
+                Console.Write($"{vector[i]}\t");
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
 
-        for (int i = 0; i < N; i++)
-        {
-            sw[i].WriteLine("12345");
-        }
-
-        for (int i = 0; i < N; i++)
-        {
-            sw[i].WriteLine("12345");
-        }
-
-        for (int i = 0; i < N; i++)
-        {
-            sw[i].WriteLine("12345");
-        }
-
-        for (int i = 0; i < N; i++)
-        {
-            sw[i].WriteLine("HUI HUI PIZDA PIZDA");
-        }
-
-        for (int i = 0; i < N; i++)
-        {
-            sw[i].Close();
-        }
 
     }
 }

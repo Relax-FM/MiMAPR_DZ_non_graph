@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Dynamic;
 using System.Linq;
 using System.Security;
 using System.Text;
@@ -25,7 +26,7 @@ namespace MiMAPR_DZ_non_graph
         private static double NowTime = 0; // Время сейчас
         // private static double NowStep = 0; // Текущий шаг
         private static double dt = 0; // Текуший шаг
-        private static double dt_before = 0;
+        // private static double dt_before = 0;
         private static double StopStep = 0; // Величина шага на котором остановилась программа
         private static double FullTime = 0; // Полное время работы программы
 
@@ -41,15 +42,183 @@ namespace MiMAPR_DZ_non_graph
         private static List<double> Phi_before;
         private static List<double> Phi_with_dot;
         private static List<double> Phi_extra;
-        private static List<double> Dphi_with_dot;
+        private static List<double> Phi_with_dot_before;
         private static List<double> Phi_integ;
         private static List<double> Phi_integ_before;
-        private static List<double> Dphi_integ;
-        private static List<double> Dphi;
+        private static List<double> Dphi_integ; // MB delete
+        private static List<double> Dphi; // MB delete
         private static List<double> Ie;
-        private static List<double> Die;
+        private static List<double> Ie_before;
 
         private static List<ElemTemp> elemList = new List<ElemTemp>();
+
+        public static int Calculating_v2()
+        {
+            StreamWriter[] sw = new StreamWriter[UselCount];
+
+            for (int i = 0; i < UselCount; i++)
+            {
+                string filename = $"phi-{i + 1}.txt";
+                sw[i] = new StreamWriter(filename);
+            }
+            Console.WriteLine("Открыл файлы норм");
+
+            StopStep = dt;
+            // ClearMatrixAndVector();
+            while (NowTime <= FullTime)
+            {
+                double dt_before = dt; // dt_before - delta_t; dt - step_t; StopStep - step_t_last
+                bool cnt_flag = true;
+                int iteration = 0;
+                while (cnt_flag)
+                {
+                    ClearTogether();
+                    CreateTogether();
+
+                    if (Gauss() == false)
+                    {
+                        Console.WriteLine("Gausu hana ;(");
+                        return 1;
+                    }
+
+                    Summing_with_vector();
+                    iteration++;
+
+                    if (MaxOrEps())
+                    {
+                        // Console.WriteLine("Zdes'Tut");
+                        cnt_flag = true;
+                    }
+                    else
+                    {
+                        cnt_flag = false;
+                    }
+
+                    if (iteration > Iter_count && cnt_flag == true)
+                    {
+                        iteration = 0;
+                        // Console.WriteLine("HeH");
+                        dt_before /= 2;
+                        Summing_with_before();
+                    }
+
+                }
+                // Тут типа Ньютон закончился (поэтерировали на шаге пора и новый шаг ботрачить)  // dt_before - delta_t; dt - step_t; StopStep - step_t_last
+
+                double[] dev_loc = new double[UselCount];
+
+                for (int i = 0; i < UselCount; i++)
+                {
+                    dev_loc[i] = Math.Abs(dt / (dt + StopStep) * ((Phi_now[i] - Phi_before[i]) - dt / StopStep * (Phi_before[i] - Phi_extra[i])));
+                }
+
+                if (CheckDev_loc(ref dev_loc))
+                {
+                    dt /= 2;
+                    //Console.WriteLine("DIV!  ");
+                    Summing_with_before();
+                }
+                else
+                {
+                    // Console.WriteLine("SUCCS  !");
+                    Summing_before_extra();
+                    StopStep = dt_before;
+
+                    for (int i = 0; i < UselCount; i++)
+                    {
+                        sw[i].WriteLine($"{NowTime:F9} {Phi_now[i]:F9}");
+                    }
+                    NowTime += dt_before;
+
+                    if (CheckDev_loc(ref dev_loc, false))
+                    {
+                        dt *= 2; //dt
+                    }
+
+                }
+            }
+
+            Console.WriteLine("Результаты сохранены в файлы типа phi-1.txt");
+            for (int i = 0; i < UselCount; i++)
+            {
+                sw[i].Close(); // Позакрывали все файлы.
+            }
+            return 0;
+
+        }
+
+        private static void Summing_before_extra()
+        {
+            for (int i = 0; i < UselCount; i++)
+            {
+                Phi_extra[i] = Phi_before[i];
+                Phi_before[i] = Phi_now[i];
+                Phi_integ_before[i] = Phi_integ[i];
+                Phi_with_dot_before[i] = Phi_with_dot[i];
+            }
+            for (int i = 3 * UselCount; i < ShapeCount; i++)
+            {
+                Ie_before[i - 3 * UselCount] = Ie[i - 3 * UselCount];
+            }
+
+        }
+
+        private static bool CheckDev_loc(ref double[] dev_loc,bool flag = true)
+        {
+            bool res = false;
+            if (flag)
+            {
+                for (int i = 0; i < UselCount; i++)
+                {
+                    if (dev_loc[i] > Eps_max)
+                    {
+                        res = true;
+                    }
+                }
+            }
+            else
+            {
+                res = true;
+                for (int i = 0; i < UselCount; i++)
+                {
+                    if (dev_loc[i] >= Eps_min)
+                    {
+                        res = false;
+                    }
+                }
+            }
+            return res;
+        }
+
+        private static void Summing_with_vector()
+        {
+            for (int i = 0; i < UselCount; i++)
+            {
+                Phi_with_dot[i] = Phi_with_dot[i] + vector[i]; // фи с точкой + дельта фи с точкой
+                Phi_integ[i] = Phi_integ[i] + vector[i + UselCount]; // интеграл от фи плюс дельта интеграл от фи
+                Phi_now[i] = Phi_now[i] + vector[i + (2 * UselCount)]; // Фи плюс дельта фи
+            }
+
+            for (int i = 3 * UselCount; i < ShapeCount; i++)
+            {
+                Ie[i - 3 * UselCount] = Ie[i - 3 * UselCount] + vector[i];
+            }
+        }
+
+        private static void Summing_with_before()
+        {
+            for (int i = 0; i < UselCount; i++)
+            {
+                Phi_with_dot[i] = Phi_with_dot_before[i]; // фи с точкой + дельта фи с точкой
+                Phi_integ[i] = Phi_integ_before[i]; // интеграл от фи плюс дельта интеграл от фи
+                Phi_now[i] = Phi_before[i];// Фи плюс дельта фи
+            }
+
+            for (int i = 3 * UselCount; i < ShapeCount; i++)
+            {
+                Ie[i - 3 * UselCount] = Ie_before[i - 3 * UselCount];
+            }
+        }
 
         public static int Calculating()
         {
@@ -66,17 +235,17 @@ namespace MiMAPR_DZ_non_graph
             // TODO: дописать солвер
             // ТУТ ВСЁ РЕШЕНИЕ
 
-            while (NowTime < FullTime)
+            while (NowTime <= FullTime)
             {
                 ClearTogether();
                 CreateTogether();
                 if (Gauss())
                 {
                     Summing();
-                    Console.WriteLine("Даже до сюда дошел");
+                    Console.WriteLine($"Даже до сюда дошел {Phi_now[0]}");
                     for (int i = 0; i < UselCount; i++)
                     {
-                        sw[i].WriteLine($"{NowTime} {Phi_now[i]}");
+                        sw[i].WriteLine($"{NowTime:F9} {Phi_now[i]:F9}");
                     }
                 }
                 else
@@ -155,17 +324,15 @@ namespace MiMAPR_DZ_non_graph
                 elem.AddElemOnVector(ref vector, 2 * UselCount);
             }
 
-            int k = 0;
-            for (int i = 0; i < Ecounter; i++)
+            //int k = 0;
+            
+            for (int j = 0; j < elemList.Count; j++)
             {
-                for (int j = k; j < elemList.Count; j++)
+                if (elemList[j].GetName() == "E")
                 {
-                    if (elemList[j].GetName() == "E")
-                    {
-                        elemList[j].GetEdsOnVector(ref vector, 3 * UselCount);
-                        k = j + 1;
-                    }
-                }
+                     elemList[j].GetEdsOnVector(ref vector, 3 * UselCount, NowTime);
+                    //k = j + 1;
+                } 
             }
 
             MinusVector();
@@ -201,6 +368,9 @@ namespace MiMAPR_DZ_non_graph
                     case "R":
                         elem.AddElemOnMatrix(ref matrix, UnitMatrixShape, UnitMatrixShape);
                         break;
+                    case "I":
+                        elem.AddElemOnMatrix(ref matrix, UnitMatrixShape, UnitMatrixShape);
+                        break;
                     case "E":
                         elem.AddElemOnMatrix(ref matrix, UnitMatrixShape, UselCount);
                         offset++;
@@ -217,7 +387,7 @@ namespace MiMAPR_DZ_non_graph
             CreateVector();
         }
 
-        private static bool MaxOrEps()
+        private static bool MaxOrEps() // если true - vector > deviation; false - все vector[i] < deviation
         {
             for (int i = 0; i < vector.Length; i++)
             {
@@ -321,19 +491,19 @@ namespace MiMAPR_DZ_non_graph
             Phi_now = new List<double>();
             Phi_before = new List<double>();
             Phi_with_dot = new List<double>();
-            Dphi_with_dot = new List<double>();
+            Phi_with_dot_before = new List<double>();
             Phi_extra = new List<double>();
             Phi_integ = new List<double>();
             Phi_integ_before = new List<double>();
             Dphi_integ = new List<double>();
             Dphi = new List<double>();
             Ie = new List<double>();
-            Die = new List<double>();
+            Ie_before = new List<double>();
 
             for (int i = 0; i < Ecounter; i++)
             {
                 Ie.Add(0);
-                Die.Add(0);
+                Ie_before.Add(0);
             }
 
             for (int i = 0; i < UselCount; i++)
@@ -341,7 +511,7 @@ namespace MiMAPR_DZ_non_graph
                 Phi_now.Add(0);
                 Phi_before.Add(0);
                 Phi_with_dot.Add(0);
-                Dphi_with_dot.Add(0);
+                Phi_with_dot_before.Add(0);
                 Phi_extra.Add(0);
                 Phi_integ.Add(0);
                 Phi_integ_before.Add(0);
@@ -459,11 +629,11 @@ namespace MiMAPR_DZ_non_graph
 
         public static void SetCountingTimeSettings(double start_time,double full_time, double start_step) 
         {
-            NowTime = start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени // start_time; //
-            //NowStep = start_step;
-            dt_before = start_step;
+            NowTime = start_time;//start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени // start_time; //
+            // NowStep = start_step;
+            // dt_before = start_step;
             dt = start_step;
-            StopStep = start_step;
+            // StopStep = start_step;
             FullTime = full_time;
         }
 
