@@ -9,7 +9,7 @@ namespace MiMAPR_DZ_non_graph
     internal class Katushka : ElemTemp
     {
         private double value = 0;
-        public Katushka(int _id, int _eid,string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid,"L", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
+        public Katushka(int _id, int _eid, string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid, "L", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
         {
             if (parameters.ContainsKey("value"))
             {
@@ -21,26 +21,26 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1/value; // 1/L
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1 / value; // 1/L
             }
             if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1/value; // 1/L
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1 / value; // 1/L
             }
             if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1/value;
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1/value;
-                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= 1/value;
-                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= 1/value;
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1 / value;
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1 / value;
+                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= 1 / value;
+                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= 1 / value;
             }
         }
 
         public override void AddElemOnMatrixTest(int x, int y, int cnt, ref double[,] matrix, int offset = 0)
         {
-            if ((leftSideUzel > 0)&&(rightSideUzel==0))
+            if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                matrix[x+leftSideUzel-1, y+leftSideUzel-1] += cnt; // 1/L
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += cnt; // 1/L
             }
             if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
@@ -59,15 +59,15 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                vector[leftSideUzel - 1 + offset] += 1/value * (Phi_integ[leftSideUzel-1] - 0);
+                vector[leftSideUzel - 1 + offset] += 1 / value * (Phi_integ[leftSideUzel - 1] - 0);
             }
             else if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                vector[rightSideUzel - 1 + offset] -= 1 / value * (0 - Phi_integ[rightSideUzel-1]);
+                vector[rightSideUzel - 1 + offset] -= 1 / value * (0 - Phi_integ[rightSideUzel - 1]);
             }
             else if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
-                vector[leftSideUzel - 1 + offset] += 1 / value * (Phi_integ[leftSideUzel - 1] - Phi_integ[rightSideUzel-1]);
+                vector[leftSideUzel - 1 + offset] += 1 / value * (Phi_integ[leftSideUzel - 1] - Phi_integ[rightSideUzel - 1]);
                 vector[rightSideUzel - 1 + offset] -= 1 / value * (Phi_integ[leftSideUzel - 1] - Phi_integ[rightSideUzel - 1]);
             }
         }
@@ -93,7 +93,7 @@ namespace MiMAPR_DZ_non_graph
     internal class Resistor : ElemTemp
     {
         private double value = 0;
-        public Resistor(int _id, int _eid,string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid,"R", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
+        public Resistor(int _id, int _eid, string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid, "R", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
         {
             if (parameters.ContainsKey("value"))
             {
@@ -105,18 +105,18 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1/value; // 1/L
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1 / value; // 1/L
             }
             if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1/value; // 1/L
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1 / value; // 1/L
             }
             if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1/value;
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1/value;
-                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= 1/value;
-                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= 1/value;
+                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += 1 / value;
+                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += 1 / value;
+                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= 1 / value;
+                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= 1 / value;
             }
         }
 
@@ -177,7 +177,7 @@ namespace MiMAPR_DZ_non_graph
     internal class Condencator : ElemTemp
     {
         private double value = 0;
-        public Condencator(int _id, int _eid,string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid,"C", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
+        public Condencator(int _id, int _eid, string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid, "C", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
         {
             if (parameters.ContainsKey("value"))
             {
@@ -265,7 +265,7 @@ namespace MiMAPR_DZ_non_graph
         private double phase = 0;
         private double value = 0;
         private bool funcFlag = false;
-        public EDS(int _id, int _eid,string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid,"E", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
+        public EDS(int _id, int _eid, string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid, "E", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
         {
             if (parameters.ContainsKey("value"))
             {
@@ -311,11 +311,11 @@ namespace MiMAPR_DZ_non_graph
             double E = funcFlag ? SinusoidFunc(NowTime) : value;
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                vector[offset + elemId-1] = (Phi_now[leftSideUzel-1] - 0) - E;
+                vector[offset + elemId - 1] = (Phi_now[leftSideUzel - 1] - 0) - E;
             }
             else if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                vector[offset + elemId-1] = (0 - Phi_now[rightSideUzel - 1]) - E;
+                vector[offset + elemId - 1] = (0 - Phi_now[rightSideUzel - 1]) - E;
             }
             else if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
@@ -327,8 +327,8 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                matrix[x + leftSideUzel-1,x + y + elemId - 1] += 1; // IE
-                matrix[x + y + elemId - 1, x + leftSideUzel-1] += 1; // IE
+                matrix[x + leftSideUzel - 1, x + y + elemId - 1] += 1; // IE
+                matrix[x + y + elemId - 1, x + leftSideUzel - 1] += 1; // IE
             }
             if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
@@ -353,20 +353,20 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                matrix[x + leftSideUzel - 1, x + y + elemId-1] += 1; // IE
-                matrix[x + y + elemId-1, x + leftSideUzel - 1] += 1; // IE
+                matrix[x + leftSideUzel - 1, x + y + elemId - 1] += 1; // IE
+                matrix[x + y + elemId - 1, x + leftSideUzel - 1] += 1; // IE
             }
             if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                matrix[x + rightSideUzel - 1, x + y + elemId-1] -= 1; // IE
-                matrix[x + y + elemId-1, x + rightSideUzel - 1] -= 1; // IE
+                matrix[x + rightSideUzel - 1, x + y + elemId - 1] -= 1; // IE
+                matrix[x + y + elemId - 1, x + rightSideUzel - 1] -= 1; // IE
             }
             if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
-                matrix[x + leftSideUzel - 1, x + y + elemId-1] += 1; // IE
-                matrix[x + y + elemId-1, x + leftSideUzel - 1] += 1; // IE
-                matrix[x + rightSideUzel - 1, x + y + elemId-1] -= 1; // IE
-                matrix[x + y + elemId-1, x + rightSideUzel - 1] -= 1; // IE
+                matrix[x + leftSideUzel - 1, x + y + elemId - 1] += 1; // IE
+                matrix[x + y + elemId - 1, x + leftSideUzel - 1] += 1; // IE
+                matrix[x + rightSideUzel - 1, x + y + elemId - 1] -= 1; // IE
+                matrix[x + y + elemId - 1, x + rightSideUzel - 1] -= 1; // IE
             }
         }
 
@@ -386,16 +386,16 @@ namespace MiMAPR_DZ_non_graph
         {
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {
-                vector[leftSideUzel - 1 + offset] += Ie[elemId-1];
+                vector[leftSideUzel - 1 + offset] += Ie[elemId - 1];
             }
             else if ((leftSideUzel == 0) && (rightSideUzel > 0))
             {
-                vector[rightSideUzel - 1 + offset] -= Ie[elemId-1];
+                vector[rightSideUzel - 1 + offset] -= Ie[elemId - 1];
             }
             else if ((leftSideUzel > 0) && (rightSideUzel > 0))
             {
-                vector[leftSideUzel - 1 + offset] += Ie[elemId-1];
-                vector[rightSideUzel - 1 + offset] -= Ie[elemId-1];
+                vector[leftSideUzel - 1 + offset] += Ie[elemId - 1];
+                vector[rightSideUzel - 1 + offset] -= Ie[elemId - 1];
             }
         }
     }
@@ -419,7 +419,7 @@ namespace MiMAPR_DZ_non_graph
             double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
             double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
 
-            res = It * (Math.Exp((x1 - x2)/Mft ) - 1);
+            res = It * (Math.Exp((x1 - x2) / Mft) - 1);
 
             return res;
         }
@@ -428,7 +428,7 @@ namespace MiMAPR_DZ_non_graph
         {
             double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
             double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
-            double val = It / Mft * (Math.Exp((x1 - x2)/Mft));
+            double val = It / Mft * (Math.Exp((x1 - x2) / Mft));
 
             if ((leftSideUzel > 0) && (rightSideUzel == 0))
             {

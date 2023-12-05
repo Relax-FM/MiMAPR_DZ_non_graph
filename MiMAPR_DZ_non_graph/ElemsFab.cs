@@ -163,7 +163,7 @@ namespace MiMAPR_DZ_non_graph
 
         }
 
-        private static bool CheckDev_loc(ref double[] dev_loc,bool flag = true)
+        private static bool CheckDev_loc(ref double[] dev_loc, bool flag = true)
         {
             bool res = false;
             if (flag)
@@ -250,7 +250,7 @@ namespace MiMAPR_DZ_non_graph
                 }
                 else
                 {
-                    Console.WriteLine("Suetaaaa");
+                    Console.WriteLine("Hui Hui Pizda Pizda");
                     return 1;
                 }
                 NowTime += dt;
@@ -277,9 +277,9 @@ namespace MiMAPR_DZ_non_graph
                 Phi_now[i] = Phi_now[i] + vector[i + (2 * UselCount)]; // Фи плюс дельта фи
             }
 
-            for (int i = 3*UselCount; i < ShapeCount; i++)
+            for (int i = 3 * UselCount; i < ShapeCount; i++)
             {
-                Ie[i-3*UselCount] = Ie[i-3*UselCount] + vector[i];
+                Ie[i - 3 * UselCount] = Ie[i - 3 * UselCount] + vector[i];
             }
         }
 
@@ -318,21 +318,21 @@ namespace MiMAPR_DZ_non_graph
             {
                 vector[i + UselCount] = Phi_integ[i] - (Phi_integ_before[i] + Phi_now[i] * dt);
             }
-            
+
             foreach (var elem in elemList)
             {
                 elem.AddElemOnVector(ref vector, 2 * UselCount);
             }
 
             //int k = 0;
-            
+
             for (int j = 0; j < elemList.Count; j++)
             {
                 if (elemList[j].GetName() == "E")
                 {
-                     elemList[j].GetEdsOnVector(ref vector, 3 * UselCount, NowTime);
+                    elemList[j].GetEdsOnVector(ref vector, 3 * UselCount, NowTime);
                     //k = j + 1;
-                } 
+                }
             }
 
             MinusVector();
@@ -417,7 +417,7 @@ namespace MiMAPR_DZ_non_graph
             {
                 vector[i + UselCount] = 1;
             }
-            
+
 
             foreach (var elem in elemList)
             {
@@ -432,8 +432,8 @@ namespace MiMAPR_DZ_non_graph
                 {
                     if (elemList[j].GetName() == "E")
                     {
-                        elemList[j].GetEdsOnVectorTest(ref vector, i, 3*UselCount);
-                        k = j+1;
+                        elemList[j].GetEdsOnVectorTest(ref vector, i, 3 * UselCount);
+                        k = j + 1;
                     }
                 }
             }
@@ -586,7 +586,7 @@ namespace MiMAPR_DZ_non_graph
                     }
                     else
                         Console.Write($"{matrix[i, j]}\t");
-                    
+
                 }
                 Console.WriteLine();
             }
@@ -599,23 +599,23 @@ namespace MiMAPR_DZ_non_graph
             {
                 case "R":
                     Rcounter++;
-                    elemList.Add(new Resistor(IDcounter, Rcounter,_real_name, new String($"{_name}{Rcounter}"),_leftSideUzel, _rightSideUzel, _parameters));
+                    elemList.Add(new Resistor(IDcounter, Rcounter, _real_name, new String($"{_name}{Rcounter}"), _leftSideUzel, _rightSideUzel, _parameters));
                     break;
                 case "C":
                     Ccounter++;
-                    elemList.Add(new Condencator(IDcounter, Ccounter,_real_name, new String($"{_name}{Ccounter}"), _leftSideUzel, _rightSideUzel, _parameters));
+                    elemList.Add(new Condencator(IDcounter, Ccounter, _real_name, new String($"{_name}{Ccounter}"), _leftSideUzel, _rightSideUzel, _parameters));
                     break;
                 case "L":
                     Lcounter++;
-                    elemList.Add(new Katushka(IDcounter, Lcounter,_real_name, new String($"{_name}{Lcounter}"), _leftSideUzel, _rightSideUzel, _parameters));
+                    elemList.Add(new Katushka(IDcounter, Lcounter, _real_name, new String($"{_name}{Lcounter}"), _leftSideUzel, _rightSideUzel, _parameters));
                     break;
                 case "E":
                     Ecounter++;
-                    elemList.Add(new EDS(IDcounter, Ecounter,_real_name, new String($"{_name}{Ecounter}"), _leftSideUzel, _rightSideUzel, _parameters));
+                    elemList.Add(new EDS(IDcounter, Ecounter, _real_name, new String($"{_name}{Ecounter}"), _leftSideUzel, _rightSideUzel, _parameters));
                     break;
                 case "I":
                     Icounter++;
-                    elemList.Add(new Idiot(IDcounter, Icounter,_real_name, new String($"{_name}{Icounter}"), _leftSideUzel, _rightSideUzel, _parameters));
+                    elemList.Add(new Idiot(IDcounter, Icounter, _real_name, new String($"{_name}{Icounter}"), _leftSideUzel, _rightSideUzel, _parameters));
                     break;
             }
         }
@@ -623,11 +623,11 @@ namespace MiMAPR_DZ_non_graph
         public static void SetUselAndShapeCount(int uselCount)
         {
             UselCount = uselCount;
-            ShapeCount = UselCount*3+Ecounter;
+            ShapeCount = UselCount * 3 + Ecounter;
             UnitMatrixShape = UselCount * 2;
         }
 
-        public static void SetCountingTimeSettings(double start_time,double full_time, double start_step) 
+        public static void SetCountingTimeSettings(double start_time, double full_time, double start_step)
         {
             NowTime = start_time;//start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени // start_time; //
             // NowStep = start_step;
@@ -637,7 +637,7 @@ namespace MiMAPR_DZ_non_graph
             FullTime = full_time;
         }
 
-        public static void SetCountingEpsilonSettings(double eps_min, double eps_max, double deviation = 1e-3,double iter_count = 7)
+        public static void SetCountingEpsilonSettings(double eps_min, double eps_max, double deviation = 1e-3, double iter_count = 7)
         {
             Eps_min = eps_min;
             Eps_max = eps_max;
@@ -676,15 +676,15 @@ namespace MiMAPR_DZ_non_graph
                     diagElem = matrix[k, i];
                     for (j = i; j < vector.Length; j++)
                     {
-                        matrix[k,j] -= matrix[i,j] * diagElem;
+                        matrix[k, j] -= matrix[i, j] * diagElem;
                     }
                     vector[k] -= vector[i] * diagElem;
                 }
             }
 
-            for (i = vector.Length - 2; i >= 0 ; i--) // Обратка
+            for (i = vector.Length - 2; i >= 0; i--) // Обратка
             {
-                for (j = i+1; j < vector.Length; j++)
+                for (j = i + 1; j < vector.Length; j++)
                 {
                     vector[i] -= matrix[i, j] * vector[j];
                 }

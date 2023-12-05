@@ -41,7 +41,7 @@ namespace MiMAPR_DZ_non_graph
             return name;
         }
 
-        public static void SetPhi(ref List<double> _now,ref List<double> _integ,ref List<double> _with_dot, ref List<double> _Ie, ref double nt)
+        public static void SetPhi(ref List<double> _now, ref List<double> _integ, ref List<double> _with_dot, ref List<double> _Ie, ref double nt)
         {
             Phi_now = _now;
             Phi_integ = _integ;
@@ -60,7 +60,7 @@ namespace MiMAPR_DZ_non_graph
             Console.WriteLine("Вот это ты вряд ли увидешь :)");
         }
 
-        public abstract void AddElemOnMatrixTest(int x, int y,int cnt, ref double[,] matrix, int offset);
+        public abstract void AddElemOnMatrixTest(int x, int y, int cnt, ref double[,] matrix, int offset);
         public abstract void AddElemOnMatrix(ref double[,] matrix, int x, int y);
         public abstract void AddElemOnVectorTest(ref double[] vector, int i, int offset);
         public abstract void AddElemOnVector(ref double[] vector, int offset);
