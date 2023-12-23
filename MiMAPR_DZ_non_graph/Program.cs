@@ -29,13 +29,7 @@ namespace MiMAPR_DZ_non_graph
 
             ElemsFab.StartPreparing(); // Выделение памятей и заполнение нулями всех элементов.
 
-            //ElemsFab.CreateMatrix(); // Заполняем матрицу Якоби инфой
-            //ElemsFab.CreateVector(); // Заполняем вектор невязок инфой 
-
             ElemsFab.Calculating_v2();
-
-            //ElemsFab.CalculatingTest(); // Тут вся магия по идее происходить будет когда-нибудь
-
         }
     }
 }
