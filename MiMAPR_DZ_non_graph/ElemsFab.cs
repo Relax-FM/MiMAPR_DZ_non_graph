@@ -65,7 +65,7 @@ namespace MiMAPR_DZ_non_graph
             // ClearMatrixAndVector();
             while (NowTime <= FullTime)
             {
-                double dt_before = dt; // dt_before - delta_t; dt - step_t; StopStep - step_t_last
+                double dt_before = dt; 
                 bool cnt_flag = true;
                 int iteration = 0;
                 while (cnt_flag)
@@ -84,7 +84,6 @@ namespace MiMAPR_DZ_non_graph
 
                     if (MaxOrEps())
                     {
-                        // Console.WriteLine("Zdes'Tut");
                         cnt_flag = true;
                     }
                     else
@@ -95,7 +94,6 @@ namespace MiMAPR_DZ_non_graph
                     if (iteration > Iter_count && cnt_flag == true)
                     {
                         iteration = 0;
-                        // Console.WriteLine("HeH");
                         dt_before /= 2;
                         Summing_with_before();
                     }
@@ -113,12 +111,10 @@ namespace MiMAPR_DZ_non_graph
                 if (CheckDev_loc(ref dev_loc))
                 {
                     dt /= 2;
-                    //Console.WriteLine("DIV!  ");
                     Summing_with_before();
                 }
                 else
                 {
-                    // Console.WriteLine("SUCCS  !");
                     Summing_before_extra();
                     StopStep = dt_before;
 
@@ -229,9 +225,7 @@ namespace MiMAPR_DZ_non_graph
             }
             Console.WriteLine("Открыл файлы норм");
 
-            // ТУТ ВСЁ РЕШЕНИЕ
-            // TODO: дописать солвер
-            // ТУТ ВСЁ РЕШЕНИЕ
+
 
             while (NowTime <= FullTime)
             {
@@ -248,7 +242,7 @@ namespace MiMAPR_DZ_non_graph
                 }
                 else
                 {
-                    Console.WriteLine("Hui Hui Pizda Pizda");
+                    Console.WriteLine("");
                     return 1;
                 }
                 NowTime += dt;
@@ -627,7 +621,7 @@ namespace MiMAPR_DZ_non_graph
 
         public static void SetCountingTimeSettings(double start_time, double full_time, double start_step)
         {
-            NowTime = start_time;//start_time == 0 ? 1e-15 : start_time; //TODO: Узнать насчет начального времени // start_time; //
+            NowTime = start_time;
             // NowStep = start_step;
             // dt_before = start_step;
             dt = start_step;
