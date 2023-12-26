@@ -14,7 +14,7 @@ namespace MiMAPR_DZ_non_graph
             ElemsFab.AddElem("C", "C20", 1, 2, new Dictionary<string, double>() { { "value", 1e-6 } }); // 1e-6
             ElemsFab.AddElem("L", "L16", 1, 2, new Dictionary<string, double>() { { "value", 0.001 } });
 
-            ElemsFab.AddElem("R", "Ru1", 2, 3, new Dictionary<string, double>() { { "value", 1000000.0 } });  // TODO: поспрашивать насчет диода
+            ElemsFab.AddElem("R", "Ru1", 2, 3, new Dictionary<string, double>() { { "value", 1000000.0 } });
             ElemsFab.AddElem("C", "Cb1", 2, 3, new Dictionary<string, double>() { { "value", 2e-12 } }); //2e-12
             ElemsFab.AddElem("I", "Id1", 3, 2, new Dictionary<string, double>() { { "it", 1e-12 }, { "mft", 0.026 } });
             ElemsFab.AddElem("R", "Rb1", 3, 4, new Dictionary<string, double>() { { "value", 20.0 } });
