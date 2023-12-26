@@ -24,9 +24,7 @@ namespace MiMAPR_DZ_non_graph
         private static int ShapeCount = 0;
 
         private static double NowTime = 0; // Время сейчас
-        // private static double NowStep = 0; // Текущий шаг
         private static double dt = 0; // Текуший шаг
-        // private static double dt_before = 0;
         private static double StopStep = 0; // Величина шага на котором остановилась программа
         private static double FullTime = 0; // Полное время работы программы
 

@@ -404,12 +404,20 @@ namespace MiMAPR_DZ_non_graph
     {
         private double It = 0.0;
         private double Mft = 0.0;
+        private double value = 0.0;
+        private bool flag = false;
+
         public Idiot(int _id, int _eid, string _real_name, string _programm_name, int _leftSideUzel, int _rightSideUzel, Dictionary<string, double> _parameters) : base(_id, _eid, "I", _real_name, _programm_name, _leftSideUzel, _rightSideUzel, _parameters)
         {
             if (parameters.ContainsKey("it"))
             {
                 It = parameters["it"];
                 Mft = parameters["mft"];
+            }
+            else if (parameters.ContainsKey("value"))
+            {
+                value = parameters["value"];
+                flag = true;
             }
         }
 
@@ -426,25 +434,30 @@ namespace MiMAPR_DZ_non_graph
 
         public override void AddElemOnMatrix(ref double[,] matrix, int x, int y)
         {
-            double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
-            double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
-            double val = It / Mft * (Math.Exp((x1 - x2) / Mft));
+           
+            if (flag == false) 
+            {
+                double x1 = leftSideUzel == 0 ? 0 : Phi_now[leftSideUzel - 1];
+                double x2 = rightSideUzel == 0 ? 0 : Phi_now[rightSideUzel - 1];
+                double val = It / Mft * (Math.Exp((x1 - x2) / Mft));
 
-            if ((leftSideUzel > 0) && (rightSideUzel == 0))
-            {
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val; // 1/L
+                if ((leftSideUzel > 0) && (rightSideUzel == 0))
+                {
+                    matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val; // 1/L
+                }
+                if ((leftSideUzel == 0) && (rightSideUzel > 0))
+                {
+                    matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val; // 1/L
+                }
+                if ((leftSideUzel > 0) && (rightSideUzel > 0))
+                {
+                    matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val;
+                    matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val;
+                    matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= val;
+                    matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= val;
+                }
             }
-            if ((leftSideUzel == 0) && (rightSideUzel > 0))
-            {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val; // 1/L
-            }
-            if ((leftSideUzel > 0) && (rightSideUzel > 0))
-            {
-                matrix[x + rightSideUzel - 1, y + rightSideUzel - 1] += val;
-                matrix[x + leftSideUzel - 1, y + leftSideUzel - 1] += val;
-                matrix[x + rightSideUzel - 1, y + leftSideUzel - 1] -= val;
-                matrix[x + leftSideUzel - 1, y + rightSideUzel - 1] -= val;
-            }
+           
         }
 
         public override void AddElemOnMatrixTest(int x, int y, int cnt, ref double[,] matrix, int offset = 0)
@@ -454,19 +467,41 @@ namespace MiMAPR_DZ_non_graph
 
         public override void AddElemOnVector(ref double[] vector, int offset)
         {
-            if ((leftSideUzel > 0) && (rightSideUzel == 0))
+
+            if (flag == false)
             {
-                vector[leftSideUzel - 1 + offset] += CountI();
+                if ((leftSideUzel > 0) && (rightSideUzel == 0))
+                {
+                    vector[leftSideUzel - 1 + offset] += CountI();
+                }
+                else if ((leftSideUzel == 0) && (rightSideUzel > 0))
+                {
+                    vector[rightSideUzel - 1 + offset] -= CountI();
+                }
+                else if ((leftSideUzel > 0) && (rightSideUzel > 0))
+                {
+                    vector[leftSideUzel - 1 + offset] += CountI();
+                    vector[rightSideUzel - 1 + offset] -= CountI();
+                }
             }
-            else if ((leftSideUzel == 0) && (rightSideUzel > 0))
+            else if (flag == false) 
             {
-                vector[rightSideUzel - 1 + offset] -= CountI();
+                if ((leftSideUzel > 0) && (rightSideUzel == 0))
+                {
+                    vector[leftSideUzel - 1 + offset] += value;
+                }
+                else if ((leftSideUzel == 0) && (rightSideUzel > 0))
+                {
+                    vector[rightSideUzel - 1 + offset] -= value;
+                }
+                else if ((leftSideUzel > 0) && (rightSideUzel > 0))
+                {
+                    vector[leftSideUzel - 1 + offset] += value;
+                    vector[rightSideUzel - 1 + offset] -= value;
+                }
             }
-            else if ((leftSideUzel > 0) && (rightSideUzel > 0))
-            {
-                vector[leftSideUzel - 1 + offset] += CountI();
-                vector[rightSideUzel - 1 + offset] -= CountI();
-            }
+
+           
         }
 
         public override void AddElemOnVectorTest(ref double[] vector, int i, int offset)
