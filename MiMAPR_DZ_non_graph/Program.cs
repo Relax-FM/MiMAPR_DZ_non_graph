@@ -30,6 +30,7 @@ namespace MiMAPR_DZ_non_graph
             ElemsFab.StartPreparing(); // Выделение памятей и заполнение нулями всех элементов.
 
             ElemsFab.Calculating_v2();
+
         }
     }
 }

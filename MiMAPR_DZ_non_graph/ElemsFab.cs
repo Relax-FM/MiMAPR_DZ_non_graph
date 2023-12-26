@@ -61,6 +61,8 @@ namespace MiMAPR_DZ_non_graph
             }
             Console.WriteLine("Открыл файлы норм");
 
+            int iteration_count = 0;
+
             StopStep = dt;
             // ClearMatrixAndVector();
             while (NowTime <= FullTime)
@@ -93,6 +95,7 @@ namespace MiMAPR_DZ_non_graph
 
                     if (iteration > Iter_count && cnt_flag == true)
                     {
+                        iteration_count += iteration;
                         iteration = 0;
                         dt_before /= 2;
                         Summing_with_before();
@@ -105,7 +108,8 @@ namespace MiMAPR_DZ_non_graph
 
                 for (int i = 0; i < UselCount; i++)
                 {
-                    dev_loc[i] = Math.Abs(dt / (dt + StopStep) * ((Phi_now[i] - Phi_before[i]) - dt / StopStep * (Phi_before[i] - Phi_extra[i])));
+                    //dev_loc[i] = Math.Abs(dt / (dt + StopStep) * ((Phi_now[i] - Phi_before[i]) - dt / StopStep * (Phi_before[i] - Phi_extra[i])));
+                    dev_loc[i] = Math.Abs((dt * dt) / (2) * ((((Phi_extra[i] - Phi_before[i]) / (StopStep)) - ((Phi_before[i] - Phi_now[i]) / (dt))) / (dt))); // ETA HUITA TEPER PRAVILNAYA YA TOGO ROT YEBAL
                 }
 
                 if (CheckDev_loc(ref dev_loc))
@@ -137,6 +141,9 @@ namespace MiMAPR_DZ_non_graph
             {
                 sw[i].Close(); // Позакрывали все файлы.
             }
+
+            Console.WriteLine($"Было произведено: {iteration_count} итераций.");
+
             return 0;
 
         }
