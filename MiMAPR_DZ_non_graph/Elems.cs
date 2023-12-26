@@ -484,7 +484,7 @@ namespace MiMAPR_DZ_non_graph
                     vector[rightSideUzel - 1 + offset] -= CountI();
                 }
             }
-            else if (flag == false) 
+            else if (flag == true) 
             {
                 if ((leftSideUzel > 0) && (rightSideUzel == 0))
                 {
